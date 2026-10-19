@@ -278,6 +278,28 @@ footer{display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; pa
 #veil .veil-n{color:#F2F1EE; font-variant-numeric:tabular-nums}
 #veil .veil-bar{display:block; width:100%; height:1px; background:rgba(242,241,238,.15)} #veil .veil-bar b{display:block; height:100%; width:100%; background:#9E7DFF; transform:scaleX(0); transform-origin:left}
 html.no-intro #veil{display:none}
+/* how a project starts, as a way: a path draws itself as you scroll, a dot travels it and lights each stop */
+.way{position:relative; margin-top:8vh}
+.way-svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none}
+.way-bg{fill:none; stroke:var(--line); stroke-width:1; stroke-dasharray:2 6}
+.way-line{fill:none; stroke:#9E7DFF; stroke-width:2; stroke-linecap:round}
+.way-dot{fill:#9E7DFF; filter:drop-shadow(0 0 10px rgba(158,125,255,.9))}
+.way-steps{border-top:0 !important; margin:0 !important; display:grid; gap:14vh; padding-block:6vh 4vh !important}
+.way-steps li{position:relative; width:min(40%,520px); border:0 !important; display:block !important; padding:0 !important; opacity:.35; transition:opacity .5s}
+.way-steps li:nth-child(even){justify-self:end}
+.way-steps li.on{opacity:1}
+.way-steps li .mono{display:block; margin-bottom:10px; color:var(--muted)}
+.way-steps li p{margin-top:12px}
+.way-steps li:hover{padding-left:0 !important}
+.way-steps .node{position:absolute; top:.2em; width:18px; height:18px; border-radius:50%; border:1px solid rgba(242,241,238,.5); background:#0B0B0B; transition:background .4s, border-color .4s, box-shadow .4s}
+.way-steps li:nth-child(odd) .node{right:-56px} .way-steps li:nth-child(even) .node{left:-56px}
+.way-steps li.on .node{background:#9E7DFF; border-color:#9E7DFF; box-shadow:0 0 0 6px rgba(158,125,255,.18)}
+@media (max-width:820px){ .way-steps{gap:9vh} .way-steps li{width:auto; padding-left:44px !important; justify-self:stretch !important}
+  .way-steps li:nth-child(n) .node{left:2px; right:auto} }
+/* transitions between blocks: each section arrives as a card over the last one, its corners straightening as it lands */
+main > section:not(#intro){background:rgba(11,11,11,.94)}
+main > section[data-tone="light"]{background:rgba(242,241,238,.94)}
+main > section[data-tone="purple"]{background:rgba(158,125,255,.96)}
 /* header button in brand purple glass, all screen sizes; on the purple contact section it turns black so it stays visible */
 .nav .cta{background:rgba(158,125,255,.88); color:var(--black); border-color:rgba(255,255,255,.35)}
 .nav .cta:hover{background:#9E7DFF}
@@ -394,12 +416,13 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
   <canvas class="peek" width="560" height="420" aria-hidden="true"></canvas>
   <div class="up">
     <h2 class="h2" data-i18n-html="pr_h">How a project<br>starts<span class="acc">//</span></h2>
-    <ol class="steps">
-      <li><span class="mono">01</span><h3 data-i18n="p1">Inquiry</h3><p data-i18n="p1p">You tell us what you need through the form below.</p></li>
-      <li><span class="mono">02</span><h3 data-i18n="p2">Proposal</h3><p data-i18n="p2p">A clear scope, timing and price, in writing.</p></li>
-      <li><span class="mono">03</span><h3 data-i18n="p3">Design</h3><p data-i18n="p3p">Concept first, then every screen at every size.</p></li>
-      <li><span class="mono">04</span><h3 data-i18n="p4">Launch</h3><p data-i18n="p4p">Built, tested and live, then looked after.</p></li>
-    </ol>
+    <div class="way"><svg class="way-svg" aria-hidden="true"><path class="way-bg"/><path class="way-line"/><circle class="way-dot" r="7"/></svg>
+    <ol class="steps way-steps">
+      <li><i class="node" aria-hidden="true"></i><span class="mono">01</span><h3 data-i18n="p1">Inquiry</h3><p data-i18n="p1p">You tell us what you need through the form below.</p></li>
+      <li><i class="node" aria-hidden="true"></i><span class="mono">02</span><h3 data-i18n="p2">Proposal</h3><p data-i18n="p2p">A clear scope, timing and price, in writing.</p></li>
+      <li><i class="node" aria-hidden="true"></i><span class="mono">03</span><h3 data-i18n="p3">Design</h3><p data-i18n="p3p">Concept first, then every screen at every size.</p></li>
+      <li><i class="node" aria-hidden="true"></i><span class="mono">04</span><h3 data-i18n="p4">Launch</h3><p data-i18n="p4p">Built, tested and live, then looked after.</p></li>
+    </ol></div>
   </div>
 </section>
 
@@ -439,8 +462,8 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
             <label><input type="checkbox" id="n-dir"> <span data-i18n="s5">Creative direction</span></label>
             <label><input type="checkbox" id="n-soc"> <span data-i18n="s6">Social content</span></label>
           </div></div>
-        <div class="f"><label for="f-budget" data-i18n="f_budget">Budget</label><select id="f-budget" name="budget"><option>€750 – € [Y]</option><option>€ [Y] – € [Z]</option><option>€ [Z]+</option></select></div>
-        <div class="f"><label for="f-time" data-i18n="f_time">Timing</label><select id="f-time" name="timing"><option data-i18n="t1">As soon as possible</option><option data-i18n="t2">Within 3 months</option><option data-i18n="t3">Just exploring</option></select></div>
+        <div class="f"><label for="f-budget" data-i18n="f_budget">Budget</label><select id="f-budget" name="budget"><option>€750 – €1,500</option><option>€1,500 – €3,000</option><option>€3,000+</option></select></div>
+        <div class="f"><label for="f-time" data-i18n="f_time">Timing</label><select id="f-time" name="timing"><option data-i18n="t1">As soon as possible</option><option data-i18n="t2">Within 3 months</option></select></div>
         <div class="f full"><label for="f-msg" data-i18n="f_msg">Tell us about the project</label><textarea id="f-msg" name="message"></textarea></div>
         <button class="cta send" type="submit" data-i18n="f_send">Send inquiry</button>
         <p class="sent mono" id="sent" hidden data-i18n="f_sent">Prototype: the form is not connected yet, nothing was sent.</p>
@@ -448,7 +471,7 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
     </div>
     <footer class="mono">
       <span>SVG Studio // Amsterdam</span>
-      <span>KvK [number]</span>
+      <span>KvK 98752286</span>
       <span data-i18n="privacy">Privacy</span>
       <span>© 2026</span>
     </footer>
@@ -607,6 +630,27 @@ addEventListener("load",()=>{try{const v=+localStorage.getItem("svg-shape");if(l
    .to(rest,{opacity:1,y:0,duration:.7,stagger:.05,ease:"power2.out",clearProps:"transform,opacity"},"<.3");
  const skip=()=>{tl.progress(1);};["pointerdown","keydown","wheel","touchstart"].forEach(e=>addEventListener(e,skip,{once:true,passive:true}));
  window.replayIntro=()=>{try{sessionStorage.removeItem("svg-intro")}catch(e){}location.reload();};})();
+/* the way: build the path through the stops, draw it with scroll */
+(()=>{const way=document.querySelector(".way");if(!way)return;
+ const svg=way.querySelector(".way-svg"),bg=way.querySelector(".way-bg"),ln=way.querySelector(".way-line"),dot=way.querySelector(".way-dot");
+ const lis=[...way.querySelectorAll(".way-steps li")];let L=1,pts=[];
+ function build(){const w=way.getBoundingClientRect();svg.setAttribute("viewBox",`0 0 ${w.width} ${w.height}`);
+  pts=lis.map(li=>{const n=li.querySelector(".node").getBoundingClientRect();return [n.left+n.width/2-w.left,n.top+n.height/2-w.top]});
+  const x0=pts[0][0],all=[[x0,0],...pts,[pts[pts.length-1][0],w.height]];let d=`M${all[0][0]},${all[0][1]}`;
+  for(let i=1;i<all.length;i++){const [ax,ay]=all[i-1],[bx,by]=all[i],my=(ay+by)/2;d+=` C${ax},${my} ${bx},${my} ${bx},${by}`;}
+  bg.setAttribute("d",d);ln.setAttribute("d",d);L=ln.getTotalLength();ln.style.strokeDasharray=L;set(cur);}
+ let cur=0;function set(p){cur=p;ln.style.strokeDashoffset=L*(1-p);const q=ln.getPointAtLength(L*p);dot.setAttribute("cx",q.x);dot.setAttribute("cy",q.y);
+  lis.forEach((li,i)=>li.classList.toggle("on",q.y>=pts[i][1]-4));}
+ build();addEventListener("resize",build);if(document.fonts)document.fonts.ready.then(build);
+ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+  ScrollTrigger.create({trigger:way,start:"top 70%",end:"bottom 55%",scrub:.4,onUpdate:s=>set(s.progress),onRefresh:build});}
+ else set(1);})();
+/* block transitions: sections land like cards, corners straightening and edges widening as they arrive */
+(()=>{if(!window.gsap||!window.ScrollTrigger||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ document.querySelectorAll("main > section:not(#intro)").forEach(sec=>{
+  gsap.fromTo(sec,{clipPath:"inset(0% 5% 0% 5% round 36px)"},{clipPath:"inset(0% 0% 0% 0% round 0px)",ease:"none",
+   scrollTrigger:{trigger:sec,start:"top bottom",end:"top 20%",scrub:true}});
+  const h=sec.querySelector(".h2");if(h)gsap.from(h,{yPercent:35,opacity:0,filter:"blur(8px)",duration:1,ease:"expo.out",scrollTrigger:{trigger:h,start:"top 85%",once:true}});});})();
 /* drag any sticky note */
 document.querySelectorAll(".note").forEach(n=>{let sx,sy,ox=0,oy=0,on=false;
  n.addEventListener("pointerdown",e=>{if(e.target.closest("a"))return;on=true;sx=e.clientX-ox;sy=e.clientY-oy;n.classList.add("drag");n.setPointerCapture(e.pointerId);});
