@@ -202,17 +202,15 @@ section{position:relative}
 .steps p{margin:0; color:var(--muted); max-width:40ch; line-height:1.4}
 @media (max-width:820px){ .steps li{grid-template-columns:40px minmax(0,1fr)} .steps p{grid-column:2} }
 
-/* decorative block before contact: two giant striped slashes slide in from the edges and lock into // as it scrolls into view */
-#slashes{position:relative; height:min(100vh,820px); overflow:hidden; display:grid; place-items:center}
-#slashes svg{width:min(92vw,1100px); height:auto; overflow:visible}
-#slashes .sl{transition:none; will-change:transform}
-#slashes .sl polygon.f{fill:url(#sl-stripes)} #slashes .sl polygon.o{fill:none; stroke:rgba(242,241,238,.5); stroke-width:1; vector-effect:non-scaling-stroke}
-#slashes .sl-glow{fill:#9E7DFF; opacity:.0; filter:blur(40px)}
-#slashes .lab{position:absolute; font:500 12px/1.1 var(--mono); color:var(--muted)}
-#slashes .lab.tl{top:6vh; left:var(--pad,48px)} #slashes .lab.tr{top:6vh; right:var(--pad,48px); text-align:right}
-#slashes .lab.bl{bottom:6vh; left:var(--pad,48px)} #slashes .lab.br{bottom:6vh; right:var(--pad,48px); text-align:right}
-#slashes .lab b{color:var(--fg); font-weight:500}
-@media (max-width:820px){ #slashes{height:78vh} #slashes .lab{font-size:10px} #slashes .lab.tl,#slashes .lab.bl{left:24px} #slashes .lab.tr,#slashes .lab.br{right:24px} }
+/* decorative block before contact: a contour field (the hero sphere's lines, opened out) that draws itself on scroll,
+   breathes slowly and bends toward the cursor. No text beyond the four corner marks. */
+#field{position:relative; height:min(100vh,820px); overflow:hidden}
+#field canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+#field .lab{position:absolute; font:500 12px/1.1 var(--mono); color:var(--muted); z-index:2}
+#field .lab.tl{top:6vh; left:var(--pad,48px)} #field .lab.tr{top:6vh; right:var(--pad,48px); text-align:right}
+#field .lab.bl{bottom:6vh; left:var(--pad,48px)} #field .lab.br{bottom:6vh; right:var(--pad,48px); text-align:right}
+#field .lab b{color:var(--fg); font-weight:500}
+@media (max-width:820px){ #field{height:80vh} #field .lab{font-size:10px} #field .lab.tl,#field .lab.bl{left:24px} #field .lab.tr,#field .lab.br{right:24px} }
 /* testimonials: one big quote at a time, opened by the purple //, with a counter, arrows and a thin timer line.
    Quotes are the client's own words only; the section stays off the live site while any slot is still a [placeholder]. */
 #voices{padding-block:14vh}
@@ -450,16 +448,11 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
   </div>
 </section>
 
-<section id="slashes" data-tone="dark">
-  <svg viewBox="0 0 1000 620" aria-hidden="true">
-    <defs><pattern id="sl-stripes" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(0)"><rect class="sl-p" width="14" height="5" fill="#9E7DFF"/></pattern></defs>
-    <ellipse class="sl-glow" cx="500" cy="310" rx="300" ry="200"/>
-    <g class="sl sl-a"><polygon class="f" points="150,620 320,620 560,0 390,0"/><polygon class="o" points="150,620 320,620 560,0 390,0"/></g>
-    <g class="sl sl-b"><polygon class="f" points="440,620 610,620 850,0 680,0"/><polygon class="o" points="440,620 610,620 850,0 680,0"/></g>
-  </svg>
-  <span class="lab tl">// 06</span>
+<section id="field" data-tone="dark">
+  <canvas aria-hidden="true"></canvas>
+  <span class="lab tl">06</span>
   <span class="lab tr" data-i18n-html="sl_tr">next<br><b>your project</b></span>
-  <span class="lab bl">SVG Studio // Amsterdam</span>
+  <span class="lab bl">SVG Studio, Amsterdam</span>
   <span class="lab br">est. 2025</span>
 </section>
 <section id="contact" class="wrap" data-tone="purple">
@@ -626,22 +619,26 @@ addEventListener("load",()=>{window.setShape&&window.setShape(2)});  /* contour 
    el.style.transform=`translate(${wx+ox/ol*b}px,${wy+oy/ol*b}px) rotate(${rot}deg) scale(${s.k+f*.4})`;
    el.style.filter=f>.02?`blur(${f*6}px)`:"";});
   wrap.style.opacity=String(Math.max(0,1-f*1.6));requestAnimationFrame(loop)})();})();
-/* decorative slashes: scroll brings them together into //; stripes drift and the cursor leans them */
-(()=>{const sec=document.getElementById("slashes");if(!sec)return;
- const A=sec.querySelector(".sl-a"),B=sec.querySelector(".sl-b"),pat=sec.querySelector("#sl-stripes"),glow=sec.querySelector(".sl-glow"),
-  still=matchMedia("(prefers-reduced-motion: reduce)").matches;
- let p=still?1:0,mx=0,my=0,cx=0,cy=0,live=false;
- sec.addEventListener("pointermove",e=>{const r=sec.getBoundingClientRect();mx=(e.clientX-r.left)/r.width-.5;my=(e.clientY-r.top)/r.height-.5});
- sec.addEventListener("pointerleave",()=>{mx=my=0});
+/* contour field: ~26 warped rings around an off-centre point; scroll draws them outward, time makes them breathe,
+   the cursor pulls the centre. One ring in the accent purple. */
+(()=>{const sec=document.getElementById("field");if(!sec)return;const cv=sec.querySelector("canvas"),g=cv.getContext("2d");
+ const still=matchMedia("(prefers-reduced-motion: reduce)").matches,N=26,ACC=9;
+ let W=0,H=0,dpr=1,live=false,p=still?1:0,mx=.5,my=.5,cx=.5,cy=.5;
+ const size=()=>{dpr=Math.min(2,devicePixelRatio||1);W=sec.clientWidth;H=sec.clientHeight;cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0)};
+ size();addEventListener("resize",size);
+ sec.addEventListener("pointermove",e=>{const r=sec.getBoundingClientRect();mx=(e.clientX-r.left)/r.width;my=(e.clientY-r.top)/r.height});
+ sec.addEventListener("pointerleave",()=>{mx=.5;my=.5});
  new IntersectionObserver(e=>{live=e[0].isIntersecting;if(live)requestAnimationFrame(loop)}).observe(sec);
- function prog(){const r=sec.getBoundingClientRect(),vh=innerHeight;return Math.max(0,Math.min(1,(vh-r.top)/(vh*.9+r.height*.1)))}
- function loop(t){if(!live)return;
-  if(!still)p+=(prog()-p)*.12;cx+=(mx-cx)*.08;cy+=(my-cy)*.08;
-  const e=1-Math.pow(1-p,3),d=(1-e)*420;
-  A.setAttribute("transform",`translate(${-d+cx*-30} ${(1-e)*-60+cy*-14}) rotate(${(1-e)*-9+cx*2} 355 310)`);
-  B.setAttribute("transform",`translate(${d+cx*30} ${(1-e)*60+cy*14}) rotate(${(1-e)*9+cx*2} 645 310)`);
-  glow.style.opacity=String(.35*e*e);
-  pat.setAttribute("patternTransform",`translate(0 ${still?0:(t*.012)%14}) rotate(${-8+cx*10})`);
+ const prog=()=>{const r=sec.getBoundingClientRect(),vh=innerHeight;return Math.max(0,Math.min(1,(vh-r.top)/(vh*.85)))};
+ const n=(a,k,t)=>Math.sin(a*3+k*.35+t*.4)*.5+Math.sin(a*5-k*.22-t*.27)*.3+Math.sin(a*2+k*.6+t*.15)*.4;
+ function loop(ms){if(!live)return;const t=still?0:ms/1000;
+  if(!still)p+=(prog()-p)*.08;cx+=(mx-cx)*.05;cy+=(my-cy)*.05;
+  g.clearRect(0,0,W,H);const R=Math.max(W,H)*.75,ox=W*(.5+(cx-.5)*.18),oy=H*(.52+(cy-.5)*.18),br=.5-.5*Math.cos(t*.6);
+  for(let k=0;k<N;k++){const f=(k+1)/N,show=Math.max(0,Math.min(1,p*1.6-f*.6));if(show<=0)continue;
+   const r0=R*f*f*(1+.04*br),amp=r0*(.07+.05*f),a=k===ACC;
+   g.beginPath();const steps=180,end=Math.ceil(steps*show);
+   for(let i=0;i<=end;i++){const th=i/steps*Math.PI*2,rr=r0+amp*n(th,k,t);const x=ox+Math.cos(th)*rr*1.25,y=oy+Math.sin(th)*rr*.8;i?g.lineTo(x,y):g.moveTo(x,y)}
+   g.strokeStyle=a?"rgba(158,125,255,.9)":`rgba(242,241,238,${(.1+.32*(1-f))*show})`;g.lineWidth=a?1.6:1;g.stroke();}
   requestAnimationFrame(loop);}
 })();
 /* testimonials: words of the active quote rise in one by one; auto-advances, pauses on hover, swipe on phones.
