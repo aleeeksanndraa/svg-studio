@@ -442,28 +442,30 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
     <div class="contact-grid">
       <div class="side">
         <p class="mono" data-i18n="ct_note">// New projects<br>Websites · Identity · Direction</p>
-        <p class="mono">hello@[studio-domain]</p>
+        <p class="mono"><a href="mailto:svg.graphix@gmail.com">svg.graphix@gmail.com</a></p>
         <p class="mono">Instagram @svg.graphixx</p>
       </div>
-      <form id="inq" novalidate>
-        <div class="f"><label for="f-name" data-i18n="f_name">Name</label><input id="f-name" name="name" autocomplete="name" placeholder="Sam Jansen"></div>
-        <div class="f"><label for="f-mail" data-i18n="f_mail">Email</label><input id="f-mail" name="email" type="email" autocomplete="email" placeholder="sam@example.com"></div>
+      <form id="inq" novalidate><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+        <div class="f"><label for="f-name" data-i18n="f_name">Name</label><input id="f-name" name="name" autocomplete="name" required placeholder="Sam Jansen"></div>
+        <div class="f"><label for="f-mail" data-i18n="f_mail">Email</label><input id="f-mail" name="email" type="email" autocomplete="email" required placeholder="sam@example.com"></div>
         <div class="f"><label for="f-biz" data-i18n="f_biz">Business</label><input id="f-biz" name="business" placeholder="Studio Example"></div>
         <div class="f"><label for="f-url" data-i18n="f_url">Current website</label><input id="f-url" name="url" placeholder="example.nl"></div>
         <div class="f full"><span class="legend" data-i18n="f_need">What do you need?</span>
           <div class="checks">
-            <label><input type="checkbox" id="n-web" checked> <span data-i18n="s1">Websites</span></label>
-            <label><input type="checkbox" id="n-red"> <span data-i18n="s2">Redesigns</span></label>
-            <label><input type="checkbox" id="n-id"> <span data-i18n="s3">Brand identity</span></label>
-            <label><input type="checkbox" id="n-ux"> <span data-i18n="s4">UX/UI</span></label>
-            <label><input type="checkbox" id="n-dir"> <span data-i18n="s5">Creative direction</span></label>
-            <label><input type="checkbox" id="n-soc"> <span data-i18n="s6">Social content</span></label>
+            <label><input type="checkbox" id="n-web" name="needs" value="Websites" checked> <span data-i18n="s1">Websites</span></label>
+            <label><input type="checkbox" id="n-red" name="needs" value="Redesigns"> <span data-i18n="s2">Redesigns</span></label>
+            <label><input type="checkbox" id="n-id" name="needs" value="Brand identity"> <span data-i18n="s3">Brand identity</span></label>
+            <label><input type="checkbox" id="n-ux" name="needs" value="UX/UI"> <span data-i18n="s4">UX/UI</span></label>
+            <label><input type="checkbox" id="n-dir" name="needs" value="Creative direction"> <span data-i18n="s5">Creative direction</span></label>
+            <label><input type="checkbox" id="n-soc" name="needs" value="Social content"> <span data-i18n="s6">Social content</span></label>
           </div></div>
         <div class="f"><label for="f-budget" data-i18n="f_budget">Budget</label><select id="f-budget" name="budget"><option>€499 – €999</option><option>€1,000 – €1,999</option><option>€2,000+</option></select></div>
         <div class="f"><label for="f-time" data-i18n="f_time">Timing</label><select id="f-time" name="timing"><option data-i18n="t1">As soon as possible</option><option data-i18n="t2">Within 3 months</option></select></div>
         <div class="f full"><label for="f-msg" data-i18n="f_msg">Tell us about the project</label><textarea id="f-msg" name="message"></textarea></div>
         <button class="cta send" type="submit" data-i18n="f_send">Send inquiry</button>
-        <p class="sent mono" id="sent" hidden data-i18n="f_sent">Prototype: the form is not connected yet, nothing was sent.</p>
+        <p class="sent mono" id="sent" hidden data-i18n="f_sent">Thanks, we got your inquiry and will reply by email.</p>
+        <p class="sent mono" id="fail" hidden data-i18n="f_fail">Something went wrong. Email us at svg.graphix@gmail.com.</p>
+        <p class="sent mono" id="need" hidden data-i18n="f_need2">Please add your name and a valid email.</p>
       </form>
     </div>
     <footer class="mono">
@@ -475,7 +477,7 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
   </div>
 </section>
 </main>
-<div class="proto mono"><span data-i18n="proto">Prototype // placeholders in [brackets]</span><button type="button" class="replay" onclick="replayIntro&&replayIntro()">replay intro</button><span class="shape-sw" role="group" aria-label="Shape"><span>Shape</span><button type="button" aria-pressed="false" title="Lace">A</button><button type="button" aria-pressed="false" title="Dust ring">B</button><button type="button" aria-pressed="true" title="Contour">C</button><button type="button" aria-pressed="false" title="Shards">D</button></span></div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -498,7 +500,7 @@ s5:"Creatieve regie",s5p:"Concept en art direction voor lanceringen en campagnes
 s6:"Social content",s6p:"Postsystemen en templates in je nieuwe identiteit.",
 pr_h:"Zo start<br>een project<span class=\"acc\">//</span>",p1:"Aanvraag",p1p:"Je vertelt via het formulier hieronder wat je nodig hebt.",p2:"Voorstel",p2p:"Een duidelijke scope, planning en prijs, op papier.",p3:"Ontwerp",p3p:"Eerst het concept, dan elk scherm op elk formaat.",p4:"Lancering",p4p:"Gebouwd, getest en live, en daarna onderhouden.",
 ct_h:"Laten we maken<br>wat hierna komt.",ct_note:"// Nieuwe projecten<br>Websites · Identiteit · Regie",
-f_name:"Naam",f_mail:"E-mail",f_biz:"Bedrijf",f_url:"Huidige website",f_need:"Wat heb je nodig?",f_budget:"Budget",f_time:"Planning",t1:"Zo snel mogelijk",t2:"Binnen 3 maanden",t3:"Ik oriënteer me",f_msg:"Vertel over het project",f_send:"Aanvraag versturen",f_sent:"Prototype: het formulier is nog niet gekoppeld, er is niets verstuurd.",privacy:"Privacy",proto:"Prototype // placeholders tussen [haken]",n1:"// Notitie",n2:"Nu ruimte voor nieuwe projecten.",n3:"Websites · Redesigns · Identiteit",n4:"Start een project →"};
+f_name:"Naam",f_mail:"E-mail",f_biz:"Bedrijf",f_url:"Huidige website",f_need:"Wat heb je nodig?",f_budget:"Budget",f_time:"Planning",t1:"Zo snel mogelijk",t2:"Binnen 3 maanden",t3:"Ik oriënteer me",f_msg:"Vertel over het project",f_send:"Aanvraag versturen",f_sent:"Bedankt, we hebben je aanvraag ontvangen en reageren per e-mail.",f_fail:"Er ging iets mis. Mail ons op svg.graphix@gmail.com.",f_need2:"Vul je naam en een geldig e-mailadres in.",privacy:"Privacy",proto:"Prototype // placeholders tussen [haken]",n1:"// Notitie",n2:"Nu ruimte voor nieuwe projecten.",n3:"Websites · Redesigns · Identiteit",n4:"Start een project →"};
 const EN={};
 document.querySelectorAll("[data-i18n]").forEach(e=>EN[e.dataset.i18n]??=e.innerHTML);
 document.querySelectorAll("[data-i18n-html]").forEach(e=>EN[e.dataset.i18nHtml]??=e.innerHTML);
@@ -509,12 +511,22 @@ function setLang(l){const d=l==="nl"?NL:EN;
   try{localStorage.setItem("svg-lang",l)}catch(e){}}
 document.getElementById("lang-en").onclick=()=>setLang("en");document.getElementById("lang-nl").onclick=()=>setLang("nl");
 try{const s=localStorage.getItem("svg-lang");if(s==="nl")setLang("nl")}catch(e){}
-document.getElementById("inq").addEventListener("submit",e=>{e.preventDefault();document.getElementById("sent").hidden=false});
+/* inquiries go to the studio inbox through FormSubmit (static site, no backend) */
+document.getElementById("inq").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget,btn=f.querySelector(".send"),$=id=>document.getElementById(id);
+ ["sent","fail","need"].forEach(id=>$(id).hidden=true);
+ if(!$("f-name").value.trim()||!$("f-mail").value||!$("f-mail").checkValidity()){$("need").hidden=false;return}
+ const d=new FormData(f);if(d.get("_honey"))return;d.delete("_honey");
+ const body={name:d.get("name"),email:d.get("email"),business:d.get("business"),website:d.get("url"),needs:d.getAll("needs").join(", "),budget:d.get("budget"),timing:d.get("timing"),message:d.get("message"),
+  _subject:"New inquiry via svg-agency.com: "+(d.get("business")||d.get("name")),_replyto:d.get("email"),_template:"table",_captcha:"false"};
+ btn.disabled=true;
+ try{const r=await fetch("https://formsubmit.co/ajax/svg.graphix@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(body)});
+  const j=await r.json().catch(()=>({}));if(!r.ok||j.success==="false"||j.success===false)throw 0;$("sent").hidden=false;f.reset();}
+ catch(_){$("fail").hidden=false}
+ finally{btn.disabled=false}});
 
 
 /* shape switch in the prototype bar */
-document.querySelectorAll(".shape-sw button").forEach((b,i)=>b.addEventListener("click",()=>window.setShape&&window.setShape(i)));
-addEventListener("load",()=>{try{const v=+localStorage.getItem("svg-shape");if(localStorage.getItem("svg-shape")!==null&&window.setShape)window.setShape(v);else window.setShape&&window.setShape(2)}catch(e){}});
+addEventListener("load",()=>{window.setShape&&window.setShape(2)});  /* contour shape, fixed now the switcher is gone */
 /* process: hovering a step shows a small live contour piece in the hero's style, one motif per step */
 (()=>{const pk=document.querySelector(".peek");if(!pk)return;const gl=pk.getContext("webgl",{premultipliedAlpha:false});if(!gl)return;
  const vs="attribute vec2 a;varying vec2 v;void main(){v=a;gl_Position=vec4(a,0.,1.);}";
@@ -842,8 +854,8 @@ void main(){float ein=1.-pow(1.-uIn,3.);vec2 p=vP/mix(.03,1.,ein);vec2 gc=floor(
  const quad=new THREE.Mesh(new THREE.PlaneGeometry(1500,1500),mat);quad.frustumCulled=false;g.add(quad);
  const tones={dark:[0xEDEBE6,0x9E7DFF],light:[0x161618,0x8951D6],purple:[0x130E22,0xF2F1EE]};
  const tA=new THREE.Color(),tB=new THREE.Color();
- window.setShape=v=>{U.uV.value=v;try{localStorage.setItem("svg-shape",v)}catch(e){}document.querySelectorAll(".shape-sw button").forEach((b,i)=>b.setAttribute("aria-pressed",i==v))};
- try{const v=+localStorage.getItem("svg-shape");if(localStorage.getItem("svg-shape")!==null&&v>=0&&v<4)U.uV.value=v}catch(e){}
+ window.setShape=v=>{U.uV.value=v;document.querySelectorAll(".shape-sw button").forEach((b,i)=>b.setAttribute("aria-pressed",i==v))};
+ U.uV.value=2;
  FIGS.C={g,update(t,c){
   const P=(window.SCENE||{p:0}).p;
   U.uT.value=t;U.uIn.value=window.INTRO_IN??1;const hero=document.getElementById("intro");U.uP.value+=(Math.min(1,Math.max(0,scrollY/hero.offsetHeight)*1.8)-U.uP.value)*.1;U.uO.value+=(Math.min(1,Math.max(0,scrollY/hero.offsetHeight)*1.3)-U.uO.value)*.08;
