@@ -535,6 +535,7 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
 </main>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
@@ -577,12 +578,17 @@ document.getElementById("inq").addEventListener("submit",e=>{const f=e.currentTa
  const nl=document.documentElement.lang==="nl",name=$("f-name").value.trim(),biz=$("f-biz").value.trim();
  const hid={_subject:"New inquiry via svg-agency.com: "+(biz||name),_replyto:$("f-mail").value,_template:"table",
   _next:"https://svg-agency.com/?sent=1"+(nl?"&lang=nl":"")+"#contact",
-  _autoresponse:nl
+  _ar:nl
    ?"Hoi "+name+",\n\nBedankt voor je bericht aan SVG Studio. We hebben je aanvraag ontvangen en nemen contact met je op met alle informatie die je nodig hebt: aanpak, planning en prijs.\n\nTot snel,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"
    :"Hi "+name+",\n\nThanks for reaching out to SVG Studio. We've received your inquiry and will get in touch with all the information you need: approach, timing and price.\n\nTalk soon,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"};
- f.querySelectorAll("input.hid").forEach(x=>x.remove());
- for(const [k,v] of Object.entries(hid)){const x=document.createElement("input");x.type="hidden";x.className="hid";x.name=k;x.value=v;f.appendChild(x)}
- f.querySelector(".send").disabled=true;setTimeout(()=>f.querySelector(".send").disabled=false,8000);});
+ e.preventDefault();f.querySelector(".send").disabled=true;setTimeout(()=>f.querySelector(".send").disabled=false,8000);
+ const fd=new FormData(f),vars={name,email:$("f-mail").value,needs:fd.getAll("needs").join(", ")||"-",budget:fd.get("budget")||"-",timing:fd.get("timing")||"-"};
+ /* the designed thank-you email goes out through EmailJS; if that fails, FormSubmit sends its plain-text one instead */
+ const ej=window.emailjs?Promise.race([emailjs.send("service_zdck5iq","template_085unez",vars,{publicKey:"hj3JEgWTwVUPEyLMV"}),new Promise((_,no)=>setTimeout(no,6000))]):Promise.reject();
+ ej.then(()=>delete hid._ar,()=>{}).finally(()=>{if(hid._ar)hid._autoresponse=hid._ar;delete hid._ar;
+  f.querySelectorAll("input.hid").forEach(x=>x.remove());
+  for(const [k,v] of Object.entries(hid)){const x=document.createElement("input");x.type="hidden";x.className="hid";x.name=k;x.value=v;f.appendChild(x)}
+  f.submit()});});
 
 /* shape switch in the prototype bar */
 addEventListener("load",()=>{window.setShape&&window.setShape(2)});  /* contour shape, fixed now the switcher is gone */
