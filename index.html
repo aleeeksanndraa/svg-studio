@@ -545,7 +545,10 @@ document.getElementById("inq").addEventListener("submit",async e=>{e.preventDefa
  if(!$("f-name").value.trim()||!$("f-mail").value||!$("f-mail").checkValidity()){$("need").hidden=false;return}
  const d=new FormData(f);if(d.get("_honey"))return;d.delete("_honey");
  const body={name:d.get("name"),email:d.get("email"),business:d.get("business"),website:d.get("url"),needs:d.getAll("needs").join(", "),budget:d.get("budget"),timing:d.get("timing"),message:d.get("message"),
-  _subject:"New inquiry via svg-agency.com: "+(d.get("business")||d.get("name")),_replyto:d.get("email"),_template:"table",_captcha:"false"};
+  _subject:"New inquiry via svg-agency.com: "+(d.get("business")||d.get("name")),_replyto:d.get("email"),_template:"table",_captcha:"false",
+  _autoresponse:document.documentElement.lang==="nl"
+   ?"Hoi "+d.get("name")+",\n\nBedankt voor je bericht aan SVG Studio. We hebben je aanvraag ontvangen en nemen contact met je op met alle informatie die je nodig hebt: aanpak, planning en prijs.\n\nTot snel,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"
+   :"Hi "+d.get("name")+",\n\nThanks for reaching out to SVG Studio. We've received your inquiry and will get in touch with all the information you need: approach, timing and price.\n\nTalk soon,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"};
  btn.disabled=true;
  try{const r=await fetch("https://formsubmit.co/ajax/svg.graphix@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(body)});
   const j=await r.json().catch(()=>({}));if(!r.ok||j.success==="false"||j.success===false)throw new Error(j.message||("HTTP "+r.status));$("sent").hidden=false;f.reset();}
