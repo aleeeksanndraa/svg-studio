@@ -473,7 +473,7 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
         <p class="mono"><a href="mailto:svg.graphix@gmail.com">svg.graphix@gmail.com</a></p>
         <p class="mono"><a href="https://www.instagram.com/svg.graphixx/" target="_blank" rel="noopener">Instagram @svg.graphixx</a></p>
       </div>
-      <form id="inq" novalidate><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <form id="inq" novalidate action="https://formsubmit.co/svg.graphix@gmail.com" method="POST"><input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
         <div class="f"><label for="f-name" data-i18n="f_name">Name</label><input id="f-name" name="name" autocomplete="name" required placeholder="Sam Jansen"></div>
         <div class="f"><label for="f-mail" data-i18n="f_mail">Email</label><input id="f-mail" name="email" type="email" autocomplete="email" required placeholder="sam@example.com"></div>
         <div class="f"><label for="f-biz" data-i18n="f_biz">Business</label><input id="f-biz" name="business" placeholder="Studio Example"></div>
@@ -539,24 +539,22 @@ function setLang(l){const d=l==="nl"?NL:EN;
   try{localStorage.setItem("svg-lang",l)}catch(e){}document.dispatchEvent(new Event("svg-lang"))}
 document.getElementById("lang-en").onclick=()=>setLang("en");document.getElementById("lang-nl").onclick=()=>setLang("nl");
 try{const s=localStorage.getItem("svg-lang");if(s==="nl")setLang("nl")}catch(e){}
-/* inquiries go to the studio inbox through FormSubmit (static site, no backend) */
-document.getElementById("inq").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget,btn=f.querySelector(".send"),$=id=>document.getElementById(id);
+/* inquiries go to the studio inbox through FormSubmit as a normal form post (not AJAX): only that way FormSubmit
+   sends the visitor the automatic thank-you email. Flow: check fields here, FormSubmit shows its robot check,
+   then sends the visitor to /thanks.html. */
+document.getElementById("inq").addEventListener("submit",e=>{const f=e.currentTarget,$=id=>document.getElementById(id);
  ["sent","fail","need"].forEach(id=>$(id).hidden=true);
- if(!$("f-name").value.trim()||!$("f-mail").value||!$("f-mail").checkValidity()){$("need").hidden=false;return}
- const d=new FormData(f);if(d.get("_honey"))return;d.delete("_honey");
- const body={name:d.get("name"),email:d.get("email"),business:d.get("business"),website:d.get("url"),needs:d.getAll("needs").join(", "),budget:d.get("budget"),timing:d.get("timing"),message:d.get("message"),
-  _subject:"New inquiry via svg-agency.com: "+(d.get("business")||d.get("name")),_replyto:d.get("email"),_template:"table",_captcha:"false",
-  _autoresponse:document.documentElement.lang==="nl"
-   ?"Hoi "+d.get("name")+",\n\nBedankt voor je bericht aan SVG Studio. We hebben je aanvraag ontvangen en nemen contact met je op met alle informatie die je nodig hebt: aanpak, planning en prijs.\n\nTot snel,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"
-   :"Hi "+d.get("name")+",\n\nThanks for reaching out to SVG Studio. We've received your inquiry and will get in touch with all the information you need: approach, timing and price.\n\nTalk soon,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"};
- btn.disabled=true;
- try{const r=await fetch("https://formsubmit.co/ajax/svg.graphix@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(body)});
-  const j=await r.json().catch(()=>({}));if(!r.ok||j.success==="false"||j.success===false)throw new Error(j.message||("HTTP "+r.status));$("sent").hidden=false;f.reset();}
- catch(err){if(err&&err.message)console.warn("form:",err.message);$("fail").hidden=false;
-  const txt=Object.entries(body).filter(([k,v])=>!k.startsWith("_")&&v).map(([k,v])=>k+": "+v).join("\n");
-  $("fail").querySelectorAll(".fail-mail").forEach(a=>a.href="mailto:svg.graphix@gmail.com?subject="+encodeURIComponent(body._subject)+"&body="+encodeURIComponent(txt));}
- finally{btn.disabled=false}});
-
+ if(!$("f-name").value.trim()||!$("f-mail").value||!$("f-mail").checkValidity()){e.preventDefault();$("need").hidden=false;return}
+ if(f.querySelector('[name="_honey"]').value){e.preventDefault();return}
+ const nl=document.documentElement.lang==="nl",name=$("f-name").value.trim(),biz=$("f-biz").value.trim();
+ const hid={_subject:"New inquiry via svg-agency.com: "+(biz||name),_replyto:$("f-mail").value,_template:"table",
+  _next:"https://svg-agency.com/thanks.html"+(nl?"?lang=nl":""),
+  _autoresponse:nl
+   ?"Hoi "+name+",\n\nBedankt voor je bericht aan SVG Studio. We hebben je aanvraag ontvangen en nemen contact met je op met alle informatie die je nodig hebt: aanpak, planning en prijs.\n\nTot snel,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"
+   :"Hi "+name+",\n\nThanks for reaching out to SVG Studio. We've received your inquiry and will get in touch with all the information you need: approach, timing and price.\n\nTalk soon,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"};
+ f.querySelectorAll("input.hid").forEach(x=>x.remove());
+ for(const [k,v] of Object.entries(hid)){const x=document.createElement("input");x.type="hidden";x.className="hid";x.name=k;x.value=v;f.appendChild(x)}
+ f.querySelector(".send").disabled=true;setTimeout(()=>f.querySelector(".send").disabled=false,8000);});
 
 /* shape switch in the prototype bar */
 addEventListener("load",()=>{window.setShape&&window.setShape(2)});  /* contour shape, fixed now the switcher is gone */
