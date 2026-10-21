@@ -215,6 +215,24 @@ section{position:relative}
 #field .lab.bl{bottom:6vh; left:var(--pad,48px)} #field .lab.br{bottom:6vh; right:var(--pad,48px); text-align:right}
 #field .lab b{color:var(--fg); font-weight:500}
 @media (max-width:820px){ #field{height:80vh} #field .lab{font-size:10px} #field .lab.tl,#field .lab.bl{left:24px} #field .lab.tr,#field .lab.br{right:24px} }
+/* thank-you pop-up after an inquiry: dark card over a blurred page, breathing sphere, closes on x, backdrop or Esc */
+.ty{position:fixed; inset:0; z-index:200; display:grid; place-items:center; padding:20px; background:rgba(11,11,11,.55); backdrop-filter:blur(10px);
+  opacity:0; visibility:hidden; transition:opacity .5s ease,visibility 0s .5s}
+.ty.on{opacity:1; visibility:visible; transition:opacity .5s ease}
+.ty-card{position:relative; width:min(520px,100%); background:#0B0B0B; color:#F2F1EE; border:1px solid rgba(242,241,238,.14); border-radius:22px; padding:28px 32px 30px; text-align:left;
+  transform:translateY(24px) scale(.97); transition:transform .7s cubic-bezier(.16,1,.3,1); box-shadow:0 40px 120px rgba(0,0,0,.5)}
+.ty.on .ty-card{transform:none}
+.ty-card img{display:block; width:220px; height:auto; margin:-6px auto 10px}
+.ty-card h3{margin:0; font-family:var(--head); font-stretch:125%; font-weight:800; text-transform:uppercase; letter-spacing:-.02em; line-height:.9; font-size:clamp(36px,6vw,56px)}
+.ty-card h3 .acc{color:#9E7DFF}
+.ty-card p{margin:14px 0 0; color:#C9C9C9; font-size:16px; line-height:1.2}
+.ty-card .ty-k{font:500 12px/1 var(--mono); color:#9E7DFF; margin:0 0 12px}
+.ty-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:24px}
+.ty-row a,.ty-row button{all:unset; cursor:pointer; font:500 14px/1 var(--display); padding:13px 16px; border-radius:3px; border:1px solid rgba(242,241,238,.25)}
+.ty-row a.ig{background:#9E7DFF; border-color:#9E7DFF; color:#0B0B0B}
+.ty-row button:hover{background:#F2F1EE; color:#0B0B0B}
+.ty-x{all:unset; cursor:pointer; position:absolute; top:14px; right:16px; width:36px; height:36px; display:grid; place-items:center; border-radius:50%; font-size:20px; color:#9A9893}
+.ty-x:hover{color:#F2F1EE; background:rgba(242,241,238,.08)}
 /* testimonials: one big quote at a time, opened by the purple //, with a counter, arrows and a thin timer line.
    Quotes are the client's own words only; the section stays off the live site while any slot is still a [placeholder]. */
 #voices{padding-block:14vh}
@@ -464,6 +482,16 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
   <span class="lab bl">SVG Studio, Amsterdam</span>
   <span class="lab br">est. 2025</span>
 </section>
+<div class="ty" id="ty" role="dialog" aria-modal="true" aria-labelledby="ty-h" hidden>
+  <div class="ty-card">
+    <button class="ty-x" type="button" aria-label="Close">×</button>
+    <img src="https://svg-agency.com/email/hero.gif" alt="" width="220" height="171">
+    <p class="ty-k" data-i18n="ty_k">// inquiry received</p>
+    <h3 id="ty-h" data-i18n-html="ty_h">Thank you<span class="acc">.</span></h3>
+    <p data-i18n="ty_p">Your inquiry is in and a confirmation is on its way to your inbox. We'll get in touch with everything you need: approach, timing and a clear price.</p>
+    <div class="ty-row"><a class="ig" href="https://www.instagram.com/svg.graphixx/" target="_blank" rel="noopener" data-i18n="ty_ig">Follow @svg.graphixx</a><button type="button" class="ty-close" data-i18n="ty_back">Back to the site</button></div>
+  </div>
+</div>
 <section id="contact" class="wrap" data-tone="purple">
   <div class="up">
     <h2 class="h2" data-i18n-html="ct_h">Let's create<br>what's next.</h2>
@@ -513,7 +541,7 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
 
 <script>
 /* ---------- language ---------- */
-const NL={nav_work:"Werk",sl_tr:"hierna<br><b>jouw project</b>",vq1_role:"Medeoprichter, Dubai Prime Properties",vo_hint:"sleep de kaart voor de volgende",vo_h:"In hun<br>woorden<span class=\"acc\">//</span>",vo_note:"// Wat klanten zeiden na de lancering. Gedeeld met hun toestemming.",lab_client26:"Klantproject // 2026",lab_concept26:"Eigen concept, fictief merk // 2026",svc_from:"// projecten vanaf €750",nav_services:"Diensten",nav_studio:"Werkwijze",cta:"Start een project",
+const NL={nav_work:"Werk",sl_tr:"hierna<br><b>jouw project</b>",ty_k:"// aanvraag ontvangen",ty_h:"Bedankt<span class=\"acc\">.</span>",ty_p:"Je aanvraag is binnen en er is een bevestiging onderweg naar je inbox. We nemen contact met je op met alles wat je nodig hebt: aanpak, planning en een duidelijke prijs.",ty_ig:"Volg @svg.graphixx",ty_back:"Terug naar de site",vq1_role:"Medeoprichter, Dubai Prime Properties",vo_hint:"sleep de kaart voor de volgende",vo_h:"In hun<br>woorden<span class=\"acc\">//</span>",vo_note:"// Wat klanten zeiden na de lancering. Gedeeld met hun toestemming.",lab_client26:"Klantproject // 2026",lab_concept26:"Eigen concept, fictief merk // 2026",svc_from:"// projecten vanaf €750",nav_services:"Diensten",nav_studio:"Werkwijze",cta:"Start een project",
 c1:"// Digitale ontwerpstudio<br>Amsterdam, NL",c2:"Websites · Identiteit<br>UX/UI · Regie",c3:"Onafhankelijke studio, opgericht 2025. Nu ruimte voor nieuwe projecten.",c4:"Nu ruimte voor<br>nieuwe projecten",
 lead:"Websites, identiteiten en de visuele systemen die ze bij elkaar houden. Elk detail heeft een reden.",scroll:"Scroll",
 st_label:"// 02 Wat we doen",st_copy:"We ontwerpen en bouwen websites voor onafhankelijke merken, en de identiteit eromheen. In code openen twee slashes een opmerking: de notitie die uitlegt waarom. Zo ontwerpen wij.",
@@ -541,14 +569,14 @@ document.getElementById("lang-en").onclick=()=>setLang("en");document.getElement
 try{const s=localStorage.getItem("svg-lang");if(s==="nl")setLang("nl")}catch(e){}
 /* inquiries go to the studio inbox through FormSubmit as a normal form post (not AJAX): only that way FormSubmit
    sends the visitor the automatic thank-you email. Flow: check fields here, FormSubmit shows its robot check,
-   then sends the visitor to /thanks.html. */
+   then sends the visitor back to the site with ?sent=1, which opens the thank-you pop-up. */
 document.getElementById("inq").addEventListener("submit",e=>{const f=e.currentTarget,$=id=>document.getElementById(id);
  ["sent","fail","need"].forEach(id=>$(id).hidden=true);
  if(!$("f-name").value.trim()||!$("f-mail").value||!$("f-mail").checkValidity()){e.preventDefault();$("need").hidden=false;return}
  if(f.querySelector('[name="_honey"]').value){e.preventDefault();return}
  const nl=document.documentElement.lang==="nl",name=$("f-name").value.trim(),biz=$("f-biz").value.trim();
  const hid={_subject:"New inquiry via svg-agency.com: "+(biz||name),_replyto:$("f-mail").value,_template:"table",
-  _next:"https://svg-agency.com/thanks.html"+(nl?"?lang=nl":""),
+  _next:"https://svg-agency.com/?sent=1"+(nl?"&lang=nl":"")+"#contact",
   _autoresponse:nl
    ?"Hoi "+name+",\n\nBedankt voor je bericht aan SVG Studio. We hebben je aanvraag ontvangen en nemen contact met je op met alle informatie die je nodig hebt: aanpak, planning en prijs.\n\nTot snel,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"
    :"Hi "+name+",\n\nThanks for reaching out to SVG Studio. We've received your inquiry and will get in touch with all the information you need: approach, timing and price.\n\nTalk soon,\nSVG Studio, Amsterdam\nsvg-agency.com · instagram.com/svg.graphixx"};
@@ -653,6 +681,14 @@ addEventListener("load",()=>{window.setShape&&window.setShape(2)});  /* contour 
    g.strokeStyle=a?"rgba(158,125,255,.9)":`rgba(242,241,238,${(.1+.32*(1-f))*show})`;g.lineWidth=a?1.6:1;g.stroke();}
   requestAnimationFrame(loop);}
 })();
+/* thank-you pop-up: opens when FormSubmit sends the visitor back with ?sent=1, then cleans the address bar */
+(()=>{const ty=document.getElementById("ty");if(!ty)return;const q=new URLSearchParams(location.search);
+ const close=()=>{ty.classList.remove("on");setTimeout(()=>ty.hidden=true,500);document.removeEventListener("keydown",esc)};
+ const esc=e=>{if(e.key==="Escape")close()};
+ window.showThanks=()=>{ty.hidden=false;requestAnimationFrame(()=>ty.classList.add("on"));document.addEventListener("keydown",esc);ty.querySelector(".ty-close").focus({preventScroll:true})};
+ ty.addEventListener("click",e=>{if(e.target===ty||e.target.closest(".ty-x,.ty-close"))close()});
+ if(q.get("sent")==="1"){if(q.get("lang")==="nl"&&typeof setLang==="function")setLang("nl");
+  history.replaceState(null,"",location.pathname+"#contact");setTimeout(window.showThanks,600);}})();
 /* testimonials deck: the top card can be dragged/flicked or stepped with the arrows; it flies off and slides under the pile.
    Auto-advances while in view, pauses on hover. On the live domain the section is removed while any slot is still a [placeholder]. */
 (()=>{const sec=document.getElementById("voices");if(!sec)return;
