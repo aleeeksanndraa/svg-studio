@@ -492,7 +492,7 @@ body :not(:is(.hero-type,.band,.h2,.meta h3,.note h3,.steps h3,.note .t), :is(.h
         <div class="f full"><label for="f-msg" data-i18n="f_msg">Tell us about the project</label><textarea id="f-msg" name="message"></textarea></div>
         <button class="cta send" type="submit" data-i18n="f_send">Send inquiry</button>
         <p class="sent mono" id="sent" hidden data-i18n="f_sent">Thanks, we got your inquiry and will reply by email.</p>
-        <p class="sent mono" id="fail" hidden data-i18n="f_fail">Something went wrong. Email us at svg.graphix@gmail.com.</p>
+        <p class="sent mono" id="fail" hidden data-i18n="f_fail">Something went wrong. <a class="fail-mail" href="mailto:svg.graphix@gmail.com">Send it by email instead</a>, it opens with your message filled in.</p>
         <p class="sent mono" id="need" hidden data-i18n="f_need2">Please add your name and a valid email.</p>
       </form>
     </div>
@@ -528,7 +528,7 @@ s5:"Creatieve regie",s5p:"Concept en art direction voor lanceringen en campagnes
 s6:"Social content",s6p:"Postsystemen en templates in je nieuwe identiteit.",
 pr_h:"Zo start<br>een project<span class=\"acc\">//</span>",p1:"Aanvraag",p1p:"Je vertelt via het formulier hieronder wat je nodig hebt.",p2:"Voorstel",p2p:"Een duidelijke scope, planning en prijs, zwart op wit.",p3:"Ontwerp",p3p:"Eerst het concept, dan elk scherm op elk formaat.",p4:"Lancering",p4p:"Gebouwd, getest en live, en daarna onderhouden.",
 ct_h:"Wat maken we<br>hierna?",ct_note:"// Nieuwe projecten<br>Websites · Identiteit · Regie",
-f_name:"Naam",f_mail:"E-mail",f_biz:"Bedrijf",f_url:"Huidige website",f_need:"Wat heb je nodig?",f_budget:"Budget",f_time:"Planning",t1:"Zo snel mogelijk",t2:"Binnen 3 maanden",t3:"Ik oriënteer me",f_msg:"Vertel over het project",f_send:"Aanvraag versturen",f_sent:"Bedankt, we hebben je aanvraag ontvangen en reageren per e-mail.",f_fail:"Er ging iets mis. Mail ons op svg.graphix@gmail.com.",f_need2:"Vul je naam en een geldig e-mailadres in.",privacy:"Privacy",proto:"Prototype // placeholders tussen [haken]",n1:"// Notitie",n2:"Nu ruimte voor nieuwe projecten.",n3:"Websites · Redesigns · Identiteit",n4:"Start een project →"};
+f_name:"Naam",f_mail:"E-mail",f_biz:"Bedrijf",f_url:"Huidige website",f_need:"Wat heb je nodig?",f_budget:"Budget",f_time:"Planning",t1:"Zo snel mogelijk",t2:"Binnen 3 maanden",t3:"Ik oriënteer me",f_msg:"Vertel over het project",f_send:"Aanvraag versturen",f_sent:"Bedankt, we hebben je aanvraag ontvangen en reageren per e-mail.",f_fail:"Er ging iets mis. <a class=\"fail-mail\" href=\"mailto:svg.graphix@gmail.com\">Stuur het per e-mail</a>, je bericht staat er al in.",f_need2:"Vul je naam en een geldig e-mailadres in.",privacy:"Privacy",proto:"Prototype // placeholders tussen [haken]",n1:"// Notitie",n2:"Nu ruimte voor nieuwe projecten.",n3:"Websites · Redesigns · Identiteit",n4:"Start een project →"};
 const EN={};
 document.querySelectorAll("[data-i18n]").forEach(e=>EN[e.dataset.i18n]??=e.innerHTML);
 document.querySelectorAll("[data-i18n-html]").forEach(e=>EN[e.dataset.i18nHtml]??=e.innerHTML);
@@ -548,8 +548,10 @@ document.getElementById("inq").addEventListener("submit",async e=>{e.preventDefa
   _subject:"New inquiry via svg-agency.com: "+(d.get("business")||d.get("name")),_replyto:d.get("email"),_template:"table",_captcha:"false"};
  btn.disabled=true;
  try{const r=await fetch("https://formsubmit.co/ajax/svg.graphix@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(body)});
-  const j=await r.json().catch(()=>({}));if(!r.ok||j.success==="false"||j.success===false)throw 0;$("sent").hidden=false;f.reset();}
- catch(_){$("fail").hidden=false}
+  const j=await r.json().catch(()=>({}));if(!r.ok||j.success==="false"||j.success===false)throw new Error(j.message||("HTTP "+r.status));$("sent").hidden=false;f.reset();}
+ catch(err){if(err&&err.message)console.warn("form:",err.message);$("fail").hidden=false;
+  const txt=Object.entries(body).filter(([k,v])=>!k.startsWith("_")&&v).map(([k,v])=>k+": "+v).join("\n");
+  $("fail").querySelectorAll(".fail-mail").forEach(a=>a.href="mailto:svg.graphix@gmail.com?subject="+encodeURIComponent(body._subject)+"&body="+encodeURIComponent(txt));}
  finally{btn.disabled=false}});
 
 
